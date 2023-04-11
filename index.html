@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="cn">
+
+<head>
+    <title>Chatbot & Sedentary Reminder - Teachable Machine</title>
+    <!-- don't mind these: -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- these load the stylesheets: -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Barlow:500" />
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <!-- these load the teachable machine libraries: -->
+    <!-- more documentation at https://github.com/googlecreativelab/teachablemachine-libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+    <!-- these load our code: -->
+    <script type="module" src="./js/model-runner.js"></script>
+    <script type="module" src="./js/bar-graph.js"></script>
+    <script type="module" src="./js/request_gpt.js"></script>
+
+</head>
+
+<body>
+    <script>
+        function showTooltip() {
+            document.getElementById("tooltip").style.display = "block";
+        }
+
+        function hideTooltip() {
+            document.getElementById("tooltip").style.display = "none";
+        }
+    </script>
+    <section id="model">
+        <div id="overlay">
+            <span id="moss"><img src="./img/qq_pic_merged_1679058111687.png"></span>
+
+            <span id="info"
+                class="tooltip2">你好，我是量子计算机550W，你也可以叫我MOSS。<br>我会使用webcam检测您工作时的坐姿，同时还设置了久坐提醒，<br>当您视觉模型检测到您的坐姿不利于健康，或检测到您超过30分钟未离开电脑，MOSS将发出提醒。
+                <br>当chatbot模式打开时，我将连接chatGPT语言模块与您自由对话。<br>chatbot模式默认是关闭的。</span>
+        </div>
+
+        <h1>MOSS : Chatbot & Sedentary Reminder</h1>
+
+        <!-- <h2>Tilt your head to try it out.</h2> -->
+        <div id="webcam-wrapper">
+            <div class="loader"></div>
+            <canvas id="webcam-pose-canvas"></canvas>
+        </div>
+        <div id="graph-wrapper"></div>
+        <div>
+
+            <span><label class="switch">
+                    <input type="checkbox" id="switch" onmouseover="showTooltip()" onmouseout="hideTooltip()">
+                    <span class="slider"></span>
+                    <span id="tooltip" class="tooltip">开关打开使用chatbot模式，此模式下响应间隔较久。</span>
+                </label></span>
+        </div>
+        <div class="chat-box">
+            <div class="chat-history">
+                <!-- Chat messages go here -->
+            </div>
+            <div class="chat-message">
+                <input id='userinput' type="text" class="chat-message-input" placeholder="MOSS,为什么你只有一只眼睛?">
+                <button id='ask' type="button" class="chat-message-send">Send</button>
+            </div>
+        </div>
+
+    </section>
+    <section id="info">
+        <h2>
+            The pose-tracking model was made using
+            <a href="https://teachablemachine.withgoogle.com/">Teachable Machine.</a>
+        </h2>
+        <h2>
+            The chatbot API is from <a href="https://chat.openai.com/chat">chatGPT</a>
+        </h2>
+    </section>
+    <footer>
+        <!--  -->
+    </footer>
+
+    <script type="module">
+        import { setupModel } from './js/model-runner.js';
+        import { setupBarGraph, updateBarGraph } from './js/bar-graph.js';
+
+        import { request, addMessage, add_response, toggleSwitch } from './js/request_gpt.js';
+        let btn = document.getElementById("ask");
+        btn.addEventListener("click", addMessage);
+        let switchElem = document.getElementById("switch");
+        switchElem.addEventListener("change", toggleSwitch);
+        add_response(`你好，我是量子计算机550W，你也可以叫我MOSS——小苔藓，是不是很亲切？我将作为您的工作学习助理，使用视觉模块提醒您工作时的坐姿。你可以向我提出任何问题。`);
+
+        // train your own model using [TODO_TM2_URL], and replace this URL with your own
+        let URL = 'https://teachablemachine.withgoogle.com/models/sqFyR_0Mf/';
+
+        // setupBarGraph is defined in the js/bar-graph.js file
+        setupBarGraph(URL);
+        // setupModel is defined in the js/model-runner.js file
+        // we pass in another function: updateBarGraph (defined in the js/bar-graph.js file)
+        // setupModel will store the updateBarGraph function,
+        // and call it every time it has new prediction data from the model
+        setupModel(URL, data => {
+            let obj = new Object();
+            obj["res"] = data;
+            obj["time"] = new Date().getTime();
+
+            updateBarGraph(obj);
+        });
+    </script>
+</body>
+
+</html>
