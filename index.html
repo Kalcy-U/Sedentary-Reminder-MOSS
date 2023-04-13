@@ -31,6 +31,7 @@
         function hideTooltip() {
             document.getElementById("tooltip").style.display = "none";
         }
+
     </script>
     <section id="model">
         <div id="overlay">
@@ -50,7 +51,10 @@
         </div>
         <div id="graph-wrapper"></div>
         <div>
-
+            <span><input type="text" id="apikey" class="rounded-input"
+                    placeholder="Use chatbot? Enter your api-key here."
+                    style="border-radius: 10px; border: 1px solid #5aaae2; padding: 12px;" size=40>
+            </span>
             <span><label class="switch">
                     <input type="checkbox" id="switch" onmouseover="showTooltip()" onmouseout="hideTooltip()">
                     <span class="slider"></span>
@@ -85,7 +89,7 @@
         import { setupModel } from './js/model-runner.js';
         import { setupBarGraph, updateBarGraph } from './js/bar-graph.js';
 
-        import { request, addMessage, add_response, toggleSwitch } from './js/request_gpt.js';
+        import { request, addMessage, add_response, toggleSwitch, getapi } from './js/request_gpt.js';
         let btn = document.getElementById("ask");
         btn.addEventListener("click", addMessage);
         let switchElem = document.getElementById("switch");
@@ -95,6 +99,8 @@
         // train your own model using [TODO_TM2_URL], and replace this URL with your own
         let URL = 'https://teachablemachine.withgoogle.com/models/sqFyR_0Mf/';
 
+        let inputapi = document.getElementById("apikey");
+        inputapi.addEventListener("change", getapi);
         // setupBarGraph is defined in the js/bar-graph.js file
         setupBarGraph(URL);
         // setupModel is defined in the js/model-runner.js file

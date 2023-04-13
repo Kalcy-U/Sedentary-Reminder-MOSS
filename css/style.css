@@ -20,6 +20,15 @@ body {
   height: 34px;
 }
 
+#apikey {
+  position: relative;
+  display: inline-block;
+  width: 310px;
+  height: 18px;
+  transform: translate3d(-10px, -10px, 0px);
+
+}
+
 .switch input {
   display: none;
 }

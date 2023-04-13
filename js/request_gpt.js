@@ -1,9 +1,10 @@
 
 const apiEndpoint = "https://api.openai.com/v1/chat/completions";
-const apiKey = "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";
+var apiKey = "YOUR API KEY";
 const messageInput = document.querySelector('.chat-message-input');
 const chatHistory = document.querySelector('.chat-history');
 const switchElem = document.getElementById("switch");
+const inputapi = document.getElementById("apikey");
 export let time_limit = 15 * 1000;//两次消息至少间隔time_limit
 export let last_request = 0;
 var chatmode = false;
@@ -67,6 +68,11 @@ let data = {
         },
     ]
 };
+
+export function getapi() {
+    apiKey = inputapi.value;
+    console.log("api=" + apiKey);
+}
 export function toggleSwitch() {
     chatmode = switchElem.checked;
     if (chatmode == true) time_limit = 40 * 1000;
